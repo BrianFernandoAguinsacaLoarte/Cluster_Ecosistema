@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulación de Ecosistema</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <header>
+    <h1>Simulación de Ecosistema</h1>
+    <p>Cuatro módulos simultáneos con Web Workers: Árboles, Vida, Comida y Clima.</p>
+  </header>
+
+  <main class="grid">
+    <!-- Árboles -->
+    <section class="panel" id="trees-panel">
+      <div class="panel-header">
+        <h2>Árboles</h2>
+      </div>
+      <canvas id="trees-canvas" width="400" height="300"></canvas>
+      <div class="stats" id="trees-stats"></div>
+    </section>
+
+    <!-- Vida -->
+    <section class="panel" id="life-panel">
+      <div class="panel-header">
+        <h2>Vida Animal</h2>
+      </div>
+      <canvas id="life-canvas" width="400" height="300"></canvas>
+      <div class="stats" id="life-stats"></div>
+    </section>
+
+    <!-- Comida -->
+    <section class="panel" id="food-panel">
+      <div class="panel-header">
+        <h2>Recursos de Comida</h2>
+      </div>
+      <canvas id="food-canvas" width="400" height="300"></canvas>
+      <div class="stats" id="food-stats"></div>
+    </section>
+
+    <!-- Clima -->
+    <section class="panel" id="climate-panel">
+      <div class="panel-header">
+        <h2>Sistema Climático</h2>
+      </div>
+      <canvas id="climate-canvas" width="400" height="300"></canvas>
+      <div class="stats" id="climate-stats"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Puedes conectar/desconectar cada worker independientemente. Los demás siguen funcionando.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  master:
+    build: .
+    image: ecosystem-master:latest
+    ports:
+      - "5000:5000"
+    networks:
+      - ecosystem-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  worker-trees:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: ecosystem-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - MODULE=trees
+      - COUNT=30
+      - INTERVAL=2
+    networks:
+      - ecosystem-net
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  worker-life:
+    image: ecosystem-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - MODULE=life
+      - COUNT=25
+      - INTERVAL=2
+    networks:
+      - ecosystem-net
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  worker-food:
+    image: ecosystem-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - MODULE=food
+      - COUNT=40
+      - INTERVAL=2
+    networks:
+      - ecosystem-net
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  worker-climate:
+    image: ecosystem-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - MODULE=climate
+      - COUNT=15
+      - INTERVAL=2
+    networks:
+      - ecosystem-net
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+networks:
+  ecosystem-net:
+    driver: overlay
