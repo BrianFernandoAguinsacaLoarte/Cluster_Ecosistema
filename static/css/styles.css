@@ -1,0 +1,15 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #0b0e12; color: #e7e9ed; }
+header, footer { padding: 16px 24px; background: #11161d; border-bottom: 1px solid #1e2630; }
+header h1 { margin: 0 0 4px 0; }
+header p, footer p { margin: 0; color: #aab3c0; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(300px, 1fr)); gap: 16px; padding: 16px; }
+.panel { background: #131922; border: 1px solid #1e2630; border-radius: 8px; overflow: hidden; }
+.panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #1e2630; }
+.controls button { margin-left: 8px; padding: 6px 10px; border-radius: 6px; border: 1px solid #2a3340; background: #17202b; color: #e7e9ed; cursor: pointer; }
+.controls button:hover { background: #1c2734; }
+canvas { display: block; width: 100%; height: auto; background: #0b0e12; }
+.stats { padding: 8px 12px; font-size: 14px; color: #c7cdd8; min-height: 28px; }
+
+@media (max-width: 750px) { .grid { grid-template-columns: 1fr; } }

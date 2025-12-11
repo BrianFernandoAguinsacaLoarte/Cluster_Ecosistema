@@ -1,0 +1,19 @@
+# Worker Node - Generates ecosystem data
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir requests
+
+# Copy worker script
+COPY worker_node.py .
+
+# Default environment variables (override with docker-compose or swarm)
+ENV MASTER_URL=http://master:5000
+ENV MODULE=trees
+ENV COUNT=20
+ENV INTERVAL=2
+
+# Run worker
+CMD ["sh", "-c", "python worker_node.py --master $MASTER_URL --module $MODULE --count $COUNT --interval $INTERVAL"]
