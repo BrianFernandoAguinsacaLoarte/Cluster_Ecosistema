@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractal Sierpinski Distribuido</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sierpinski.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header>
+    <h1>Fractal Sierpinski Distribuido</h1>
+    <p>Tres nodos generan regiones en orden secuencial y el master agrega el resultado.</p>
+  </header>
+
+  <main class="grid">
+    <section class="panel" id="sierpinski-panel">
+      <div class="panel-header">
+        <h2>Triangulo de Sierpinski</h2>
+      </div>
+      <canvas id="sierpinski-canvas" width="400" height="300"></canvas>
+      <div class="stats" id="sierpinski-stats"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>El turno rota A → B → C. Cada resultado se agrega antes de pasar al siguiente nodo.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/sierpinski.js') }}"></script>
+</body>
+</html>

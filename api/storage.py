@@ -13,6 +13,18 @@ node_data = {
     'climate': {}
 }
 
+# Sierpinski coordination state (master -> workers)
+sierpinski_state = {
+    'slots': [None, None, None],
+    'turn_index': 0,
+    'task_counter': 0,
+    'current_task': None,
+    'latest': {0: None, 1: None, 2: None},
+    'depth': 5,
+    'canvas': {'width': 400, 'height': 300},
+    'timeout_seconds': 8
+}
+
 data_lock = threading.Lock()
 
 def clean_stale_data():
