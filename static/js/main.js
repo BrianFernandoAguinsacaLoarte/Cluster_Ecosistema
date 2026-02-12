@@ -16,7 +16,7 @@ function preloadImages() {
   const images = [
     '/static/img/arbol.png',
     '/static/img/leon.png',
-    '/static/img/comida.jpg',
+    '/static/img/comida.png',
     '/static/img/nube.png'
   ];
 
