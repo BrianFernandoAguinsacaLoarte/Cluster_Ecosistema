@@ -127,45 +127,49 @@ function drawCombinedCanvas() {
   // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Only draw active modules
-  Object.keys(modules).forEach(moduleName => {
+  // Define layer order: food → life → trees → climate
+  const layerOrder = ['food', 'life', 'trees', 'climate'];
+
+  // Draw each layer in order
+  layerOrder.forEach(moduleName => {
     if (!isModuleActive(moduleName)) return;
 
     const data = moduleData[moduleName];
     if (!data || data.length === 0) return;
 
-    const mod = modules[moduleName];
+    const scaleX = canvas.width / 400;
+    const scaleY = canvas.height / 300;
 
     data.forEach(item => {
-      // Scale coordinates to combined canvas
-      const scaleX = canvas.width / 400;
-      const scaleY = canvas.height / 300;
       const x = item.x * scaleX;
       const y = item.y * scaleY;
 
       // Draw based on module type
-      if (moduleName === 'trees') {
-        const img = imageCache['/static/img/arbol.png'];
+      if (moduleName === 'food') {
+        const img = imageCache['/static/img/comida.png'];
         if (img && img.complete) {
-          const h = (item.height || 30) * scaleY;
-          ctx.drawImage(img, x - 10 * scaleX, y - h, 20 * scaleX, h);
+          const size = ((item.amount || 50) / 100 * 20 + 10) * scaleX;
+          ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
         }
       } else if (moduleName === 'life') {
         const img = imageCache['/static/img/leon.png'];
         if (img && img.complete) {
           ctx.drawImage(img, x - 15 * scaleX, y - 15 * scaleY, 30 * scaleX, 30 * scaleY);
         }
-      } else if (moduleName === 'food') {
-        const img = imageCache['/static/img/comida.png'];
+      } else if (moduleName === 'trees') {
+        const img = imageCache['/static/img/arbol.png'];
         if (img && img.complete) {
-          const size = ((item.amount || 50) / 100 * 20 + 10) * scaleX;
-          ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+          const h = (item.h || 30) * scaleY;
+          ctx.drawImage(img, x - 10 * scaleX, y - h, 20 * scaleX, h);
         }
       } else if (moduleName === 'climate') {
         const img = imageCache['/static/img/nube.png'];
         if (img && img.complete) {
           const size = (item.size || 30) * scaleX;
-          ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+          // Clouds are wider than tall (2:1 aspect ratio)
+          const width = size * 1.5;
+          const height = size * 0.75;
+          ctx.drawImage(img, x - width / 2, y - height / 2, width, height);
         }
       }
     });

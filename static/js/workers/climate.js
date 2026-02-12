@@ -19,7 +19,10 @@ function reset() {
 function drawFallback() {
   const ops = [{ cmd: 'clear', args: [] }];
   clouds.forEach(c => {
-    ops.push({ cmd: 'image', args: ['/static/img/nube.png', c.x - c.size / 2, c.y - c.size / 2, c.size, c.size] });
+    // Clouds are wider than tall (2:1 aspect ratio)
+    const width = c.size * 1.5;
+    const height = c.size * 0.75;
+    ops.push({ cmd: 'image', args: ['/static/img/nube.png', c.x - width / 2, c.y - height / 2, width, height] });
   });
   postMessage({ type: 'draw', payload: { ops } });
 }
