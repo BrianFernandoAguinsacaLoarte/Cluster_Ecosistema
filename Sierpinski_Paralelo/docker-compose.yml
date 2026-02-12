@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  master:
+    build:
+      context: .
+      dockerfile: Dockerfile.master
+    image: sierpinski-master:latest
+    ports:
+      - "5000:5000"
+    networks:
+      - sierpinski-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  worker1:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: sierpinski-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - WORKER_ID=worker1
+    networks:
+      - sierpinski-net
+    deploy:
+      replicas: 0  # Inicialmente 0, se escala manualmente
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+
+  worker2:
+    image: sierpinski-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - WORKER_ID=worker2
+    networks:
+      - sierpinski-net
+    deploy:
+      replicas: 0  # Inicialmente 0, se escala manualmente
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+
+  worker3:
+    image: sierpinski-worker:latest
+    environment:
+      - MASTER_URL=http://master:5000
+      - WORKER_ID=worker3
+    networks:
+      - sierpinski-net
+    deploy:
+      replicas: 0  # Inicialmente 0, se escala manualmente
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+
+networks:
+  sierpinski-net:
+    driver: overlay
+    attachable: true
