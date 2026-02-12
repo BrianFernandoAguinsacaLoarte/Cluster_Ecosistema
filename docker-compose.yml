@@ -27,10 +27,11 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      replicas: 0  # Inicialmente 0, se escala manualmente
       placement:
         constraints:
           - node.role == worker
+          - node.labels.worker_id == worker1  # Solo en el nodo etiquetado como worker1
       restart_policy:
         condition: on-failure
 
@@ -44,10 +45,11 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      replicas: 0  # Inicialmente 0, se escala manualmente
       placement:
         constraints:
           - node.role == worker
+          - node.labels.worker_id == worker2  # Solo en el nodo etiquetado como worker2
       restart_policy:
         condition: on-failure
 
@@ -61,10 +63,11 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      replicas: 0  # Inicialmente 0, se escala manualmente
       placement:
         constraints:
           - node.role == worker
+          - node.labels.worker_id == worker1  # Solo en el nodo etiquetado como worker3
       restart_policy:
         condition: on-failure
 
@@ -78,10 +81,11 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      replicas: 0  # Inicialmente 0, se escala manualmente
       placement:
         constraints:
           - node.role == worker
+          - node.labels.worker_id == worker2  # Puede compartir nodo con trees
       restart_policy:
         condition: on-failure
 
