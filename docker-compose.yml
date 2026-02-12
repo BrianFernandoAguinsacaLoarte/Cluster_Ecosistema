@@ -27,7 +27,10 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 2
+      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      placement:
+        constraints:
+          - node.role == worker
       restart_policy:
         condition: on-failure
 
@@ -41,7 +44,10 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 2
+      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      placement:
+        constraints:
+          - node.role == worker
       restart_policy:
         condition: on-failure
 
@@ -55,7 +61,10 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 2
+      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      placement:
+        constraints:
+          - node.role == worker
       restart_policy:
         condition: on-failure
 
@@ -69,10 +78,14 @@ services:
     networks:
       - ecosystem-net
     deploy:
-      replicas: 2
+      replicas: 0  # Inicialmente 0, se escala manualmente en cada nodo
+      placement:
+        constraints:
+          - node.role == worker
       restart_policy:
         condition: on-failure
 
 networks:
   ecosystem-net:
     driver: overlay
+    attachable: true

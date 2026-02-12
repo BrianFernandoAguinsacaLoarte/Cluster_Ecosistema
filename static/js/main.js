@@ -16,10 +16,10 @@ function preloadImages() {
   const images = [
     '/static/img/arbol.png',
     '/static/img/leon.png',
-    '/static/img/manzana.jpg',
+    '/static/img/comida.jpg',
     '/static/img/nube.png'
   ];
-  
+
   const promises = images.map(src => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -35,7 +35,7 @@ function preloadImages() {
       img.src = src;
     });
   });
-  
+
   return Promise.all(promises);
 }
 
