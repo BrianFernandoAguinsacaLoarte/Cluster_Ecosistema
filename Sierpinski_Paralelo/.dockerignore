@@ -1,0 +1,33 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+
+# Archivos de documentación
+*.md
+!README.md
+
+# Scripts de Windows
+*.bat
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de prueba
+TEST_*.bat
+demo.bat
+QUICKSTART.bat

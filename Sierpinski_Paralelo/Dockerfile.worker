@@ -1,0 +1,19 @@
+# Dockerfile para los nodos worker de Sierpinski
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copiar requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar código del worker
+COPY worker.py .
+
+# El worker necesita argumentos para ejecutarse
+# Se pasarán como variables de entorno
+ENV MASTER_URL=http://master:5000
+ENV WORKER_ID=worker1
+
+# Comando para ejecutar el worker
+CMD python worker.py --master ${MASTER_URL} --id ${WORKER_ID}

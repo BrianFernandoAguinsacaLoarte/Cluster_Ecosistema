@@ -15,5 +15,8 @@ ENV MODULE=trees
 ENV COUNT=20
 ENV INTERVAL=2
 
+# Ensure Python output is unbuffered (logs appear immediately)
+ENV PYTHONUNBUFFERED=1
+
 # Run worker
-CMD ["sh", "-c", "python worker_node.py --master $MASTER_URL --module $MODULE --count $COUNT --interval $INTERVAL"]
+CMD ["sh", "-c", "python -u worker_node.py --master ${MASTER_URL} --module ${MODULE} --count ${COUNT} --interval ${INTERVAL}"]
