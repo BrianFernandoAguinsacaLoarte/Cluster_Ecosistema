@@ -7,15 +7,17 @@ app = Flask(__name__)
 # Register API blueprint
 app.register_blueprint(api_bp)
 
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@app.route('/sierpinski')
+@app.route("/sierpinski")
 def sierpinski():
-    return render_template('sierpinski.html')
+    return render_template("sierpinski.html")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     clean_stale_data()
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
