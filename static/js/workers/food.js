@@ -45,6 +45,7 @@ function tick() {
       draw();
       const avg = resources.length > 0 ? Math.round(resources.reduce((s, r) => s + r.amount, 0) / resources.length) : 0;
       postMessage({ type: 'stats', payload: { text: `Recursos: ${resources.length} | Nodos: ${apiData.count} | Promedio: ${avg}` } });
+      postMessage({ type: 'data', payload: { data: resources } });
     }
     setTimeout(tick, 1000);
   });

@@ -19,7 +19,7 @@ function reset() {
 function drawFallback() {
   const ops = [{ cmd: 'clear', args: [] }];
   clouds.forEach(c => {
-    ops.push({ cmd: 'image', args: ['/static/img/nube.png', c.x - c.size/2, c.y - c.size/2, c.size, c.size] });
+    ops.push({ cmd: 'image', args: ['/static/img/nube.png', c.x - c.size / 2, c.y - c.size / 2, c.size, c.size] });
   });
   postMessage({ type: 'draw', payload: { ops } });
 }
@@ -35,8 +35,8 @@ async function fetchData() {
     const data = await response.json();
     clouds = data.data.map(c => ({ x: c.x, y: c.y, vx: c.vx, size: c.size }));
     if (clouds.length > 0) {
-      temperature = clouds.reduce((s,c)=>s+(c.temperature||20),0)/clouds.length;
-      humidity = clouds.reduce((s,c)=>s+(c.humidity||0.5),0)/clouds.length;
+      temperature = clouds.reduce((s, c) => s + (c.temperature || 20), 0) / clouds.length;
+      humidity = clouds.reduce((s, c) => s + (c.humidity || 0.5), 0) / clouds.length;
     }
     return data;
   } catch (e) {
@@ -49,7 +49,8 @@ function tick() {
   fetchData().then(apiData => {
     if (apiData) {
       draw();
-      postMessage({ type: 'stats', payload: { text: `Temp: ${temperature.toFixed(1)}°C | Humedad: ${(humidity*100).toFixed(0)}% | Nodos: ${apiData.count}` } });
+      postMessage({ type: 'stats', payload: { text: `Temp: ${temperature.toFixed(1)}°C | Humedad: ${(humidity * 100).toFixed(0)}% | Nodos: ${apiData.count}` } });
+      postMessage({ type: 'data', payload: { data: clouds } });
     }
     setTimeout(tick, 1000);
   });

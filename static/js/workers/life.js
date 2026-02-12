@@ -42,8 +42,9 @@ function tick() {
   fetchData().then(apiData => {
     if (apiData) {
       draw();
-      const avgEnergy = animals.length > 0 ? Math.round(animals.reduce((s,a)=>s+a.energy,0)/animals.length) : 0;
+      const avgEnergy = animals.length > 0 ? Math.round(animals.reduce((s, a) => s + a.energy, 0) / animals.length) : 0;
       postMessage({ type: 'stats', payload: { text: `Animales: ${animals.length} | Nodos: ${apiData.count} | Energía: ${avgEnergy}` } });
+      postMessage({ type: 'data', payload: { data: animals } });
     }
     setTimeout(tick, 1000);
   });

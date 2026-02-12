@@ -45,8 +45,10 @@ function tick() {
   fetchData().then(apiData => {
     if (apiData) {
       draw();
-      const avgH = trees.length > 0 ? Math.round(trees.reduce((a,b)=>a+b.h,0)/trees.length) : 0;
+      const avgH = trees.length > 0 ? Math.round(trees.reduce((a, b) => a + b.h, 0) / trees.length) : 0;
       postMessage({ type: 'stats', payload: { text: `Árboles: ${trees.length} | Nodos: ${apiData.count} | Altura media: ${avgH}` } });
+      // Send data to main thread for combined view
+      postMessage({ type: 'data', payload: { data: trees } });
     }
     setTimeout(tick, 1000);
   });
