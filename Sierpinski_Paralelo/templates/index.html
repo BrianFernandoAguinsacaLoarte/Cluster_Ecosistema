@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sierpinski Paralelo - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .controls {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e3c72;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        canvas {
+            width: 100%;
+            border-radius: 8px;
+            background: #f8f9fa;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .workers-grid {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .worker-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1e3c72;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .worker-card.dead {
+            border-left-color: #dc3545;
+            opacity: 0.6;
+        }
+        
+        .worker-status {
+            font-size: 2em;
+        }
+        
+        .worker-info h3 {
+            color: #1e3c72;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+        
+        .worker-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 0.9em;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.85em;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+            font-family: monospace;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #1e3c72;
+            font-family: monospace;
+        }
+        
+        .metric-value.small {
+            font-size: 1.5em;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .alert.show {
+            display: block;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-inactive {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .no-workers {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔺 Sierpinski Paralelo - Dashboard</h1>
+            <p class="subtitle">Visualización en Tiempo Real de Computación Distribuida</p>
+        </header>
+        
+        <div class="grid">
+            <!-- Panel de Control -->
+            <div class="card">
+                <h2>⚙️ Control</h2>
+                
+                <div class="alert alert-info" id="alert-box"></div>
+                
+                <div class="controls">
+                    <div class="form-group">
+                        <label for="depth">Profundidad (Depth)</label>
+                        <input type="number" id="depth" value="6" min="1" max="10">
+                        <small style="color: #666; font-size: 0.85em; margin-top: 5px; display: block;">
+                            Niveles de recursión por región
+                        </small>
+                    </div>
+                    
+                    <div class="alert" style="background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; padding: 10px; border-radius: 6px; font-size: 0.9em;">
+                        <strong>🎯 Regiones Fijas:</strong><br>
+                        🔵 Worker1 → Región Superior<br>
+                        🟢 Worker2 → Inferior Derecha<br>
+                        🟡 Worker3 → Inferior Izquierda
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" id="generate-btn" style="flex: 1;">🚀 Generar Fractal</button>
+                        <button class="btn" id="reset-btn" style="flex: 0 0 120px; background: #f44336;">🧹 Limpiar</button>
+                    </div>
+                </div>
+                
+                <div id="progress-section" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill">0%</div>
+                    </div>
+                </div>
+                
+                <div class="metrics-grid" style="margin-top: 20px;">
+                    <div class="metric-card">
+                        <div class="metric-label">Tareas Completadas</div>
+                        <div class="metric-value" id="completed-tasks">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Tareas Totales</div>
+                        <div class="metric-value" id="total-tasks">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Tiempo Transcurrido</div>
+                        <div class="metric-value small" id="elapsed-time">0.0s</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Triángulos</div>
+                        <div class="metric-value small" id="total-triangles">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Workers Activos -->
+            <div class="card">
+                <h2>👷 Workers Activos</h2>
+                <div id="workers-container" class="workers-grid">
+                    <div class="no-workers">
+                        ⏳ Esperando workers...<br>
+                        <small>Ejecuta: <code>python worker.py --master http://127.0.0.1:5002 --id worker1</code></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Canvas del Fractal -->
+        <div class="card">
+            <h2>🎨 Fractal de Sierpinski</h2>
+            <canvas id="canvas" width="600" height="500"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const generateBtn = document.getElementById('generate-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const alertBox = document.getElementById('alert-box');
+        
+        let updateInterval = null;
+        
+        // LIMPIAR CANVAS AL CARGAR LA PÁGINA
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log('✅ Canvas limpiado al iniciar');
+        
+        function showAlert(message, type = 'info') {
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type} show`;
+            setTimeout(() => alertBox.classList.remove('show'), 5000);
+        }
+        
+        function drawTriangles(triangles) {
+            // Verificación estricta ANTES de dibujar
+            if (!triangles || !Array.isArray(triangles) || triangles.length === 0) {
+                console.log('⚠️  drawTriangles llamado con array vacío o inválido');
+                return;
+            }
+            
+            ctx.fillStyle = '#2a5298';
+            console.log(`🎨 DIBUJANDO ${triangles.length} triángulos en el canvas`);
+            
+            triangles.forEach(t => {
+                ctx.beginPath();
+                ctx.moveTo(t[0], t[1]);
+                ctx.lineTo(t[2], t[3]);
+                ctx.lineTo(t[4], t[5]);
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+        
+        function updateWorkers(workers) {
+            const container = document.getElementById('workers-container');
+            
+            if (workers.length === 0) {
+                container.innerHTML = `
+                    <div class="no-workers">
+                        ⏳ Esperando workers...<br>
+                        <small>Ejecuta: <code>python worker.py --master http://127.0.0.1:5002 --id worker1</code></small>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            workers.forEach(worker => {
+                const card = document.createElement('div');
+                card.className = `worker-card ${worker.status !== 'active' ? 'dead' : ''}`;
+                
+                const statusEmoji = worker.status === 'active' ? '✅' : '💀';
+                
+                card.innerHTML = `
+                    <div class="worker-status">${statusEmoji}</div>
+                    <div class="worker-info">
+                        <h3>${worker.worker_id}</h3>
+                        <div class="worker-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Región</span>
+                                <span class="stat-value">${worker.region}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Activas</span>
+                                <span class="stat-value">${worker.tasks_active}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Tiempo</span>
+                                <span class="stat-value">${worker.total_compute_time.toFixed(2)}s</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        async function updateStatus() {
+            try {
+                // Forzar petición fresca sin cache
+                const timestamp = new Date().getTime();
+                const response = await fetch(`/api/status?t=${timestamp}`, {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                const data = await response.json();
+                
+                // Actualizar workers
+                updateWorkers(data.workers);
+                
+                // Actualizar métricas
+                document.getElementById('completed-tasks').textContent = data.tasks_completed;
+                document.getElementById('total-tasks').textContent = data.tasks_total;
+                document.getElementById('total-triangles').textContent = data.triangles_total.toLocaleString();
+                
+                if (data.elapsed_time !== null) {
+                    document.getElementById('elapsed-time').textContent = data.elapsed_time.toFixed(2) + 's';
+                }
+                
+                // Actualizar barra de progreso
+                if (data.generation_active && data.tasks_total > 0) {
+                    const progress = (data.tasks_completed / data.tasks_total) * 100;
+                    document.getElementById('progress-section').style.display = 'block';
+                    document.getElementById('progress-fill').style.width = progress + '%';
+                    document.getElementById('progress-fill').textContent = Math.round(progress) + '%';
+                } else if (!data.generation_active && data.tasks_completed > 0) {
+                    document.getElementById('progress-section').style.display = 'block';
+                    document.getElementById('progress-fill').style.width = '100%';
+                    document.getElementById('progress-fill').textContent = '100% ✓';
+                }
+                
+                // Actualizar canvas (SIEMPRE obtener datos frescos SIN CACHE)
+                // Añadir timestamp para evitar cache del navegador
+                const timestamp2 = new Date().getTime();
+                const dataResponse = await fetch(`/api/data?t=${timestamp2}`, {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                const canvasData = await dataResponse.json();
+                
+                console.log(`📊 Datos recibidos del servidor: ${canvasData.count} triángulos`);
+                console.log('🔍 Regiones activas:', canvasData.regions_active);
+                console.log('📦 Array de triángulos:', canvasData.triangles ? `${canvasData.triangles.length} elementos` : 'null');
+                
+                // LIMPIAR CANVAS antes de dibujar
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Solo dibujar si hay triángulos
+                if (canvasData.triangles && canvasData.triangles.length > 0) {
+                    drawTriangles(canvasData.triangles);
+                } else {
+                    console.log('✅ Canvas vacío - No hay datos para renderizar');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error actualizando status:', error);
+            }
+        }
+        
+        generateBtn.addEventListener('click', async () => {
+            const depth = parseInt(document.getElementById('depth').value);
+            
+            generateBtn.disabled = true;
+            showAlert('🚀 Generando fractal por regiones...', 'info');
+            
+            // Limpiar canvas al iniciar nueva generación
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ depth })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showAlert(`✓ Generación iniciada: 3 regiones asignadas`, 'success');
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'warning');
+                }
+            } catch (error) {
+                showAlert(`❌ Error: ${error.message}`, 'warning');
+            } finally {
+                generateBtn.disabled = false;
+            }
+        });
+        
+        // Event listener para botón de reset/limpiar
+        resetBtn.addEventListener('click', async () => {
+            if (!confirm('¿Deseas limpiar completamente el sistema?\n\nEsto eliminará:\n- Todos los triángulos\n- Tareas completadas\n- Estado de generación')) {
+                return;
+            }
+            
+            resetBtn.disabled = true;
+            showAlert('🧹 Limpiando sistema...', 'info');
+            
+            try {
+                const response = await fetch('/api/reset', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Limpiar canvas inmediatamente
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    console.log('🧹 Canvas y sistema limpiados completamente');
+                    showAlert('✓ Sistema limpiado correctamente', 'success');
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'warning');
+                }
+            } catch (error) {
+                showAlert(`❌ Error: ${error.message}`, 'warning');
+            } finally {
+                resetBtn.disabled = false;
+            }
+        });
+        
+        // Inicialización: Limpiar y cargar datos frescos
+        console.log('🚀 Inicializando dashboard...');
+        console.log('🧹 Limpiando canvas inicial...');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Primera actualización inmediata
+        console.log('📡 Solicitando datos iniciales del servidor...');
+        updateStatus();
+        
+        // Actualizar cada segundo
+        setInterval(updateStatus, 1000);
+        console.log('✅ Dashboard inicializado - Actualizaciones cada 1s');
+    </script>
+</body>
+</html>
